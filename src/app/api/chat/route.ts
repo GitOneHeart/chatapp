@@ -15,9 +15,14 @@ export async function POST(req: Request) {
     const modelMessages = await convertToModelMessages(messages);
 
     const result = streamText({
-      model: deepseek.chat("deepseek-chat"), // 注意：用 .chat() 走 /chat/completions，而不是默认的 /responses
+      model: deepseek.chat("deepseek-v4-flash"), // 注意：用 .chat() 走 /chat/completions，而不是默认的 /responses
       messages: modelMessages,
       temperature: 0.7,
+      providerOptions: {
+        openai: {
+          thinking: { type: "disabled" as const },
+        },
+      },
     });
 
     return result.toUIMessageStreamResponse();

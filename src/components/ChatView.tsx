@@ -31,6 +31,7 @@ export default function ChatView({
   const bottomRef = useRef<HTMLDivElement>(null);
   const isReady = status === "ready";
   const isStreaming = status === "streaming";
+  const isSubmitted = status === "submitted";
   const skipSyncRef = useRef(true); // 跳过挂载时初始消息回写
 
   // 挂载时恢复消息（key={activeId} 保证切换对话时重新挂载）
@@ -74,7 +75,7 @@ export default function ChatView({
   };
 
   return (
-    <div className="w-full max-w-2xl flex flex-col h-dvh bg-white shadow-lg mx-auto">
+    <div className="neon-border w-full max-w-2xl flex flex-col h-dvh bg-white shadow-lg mx-auto">
       {/* 顶部标题栏 */}
       <header className="shrink-0 sticky top-0 z-10 border-b bg-white/90 backdrop-blur-md">
         <div className="flex items-center justify-between px-6 py-4">
@@ -184,6 +185,26 @@ export default function ChatView({
               </div>
             );
           })}
+          {/* 等待首 token 时显示占位气泡 */}
+          {isSubmitted &&
+            messages.length > 0 &&
+            messages[messages.length - 1].role === "user" && (
+              <div className="flex gap-3 animate-fade-in">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-rose-500 flex items-center justify-center text-white text-sm font-medium shrink-0 mt-1">
+                  大
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs mb-1.5 text-gray-400">大聪明</p>
+                  <div className="inline-block min-w-[120px] rounded-2xl px-4 py-2.5 bg-gray-100 text-gray-800 rounded-bl-md">
+                    <span className="inline-flex gap-0.5">
+                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           <div ref={bottomRef} />
         </div>
       </div>
